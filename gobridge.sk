@@ -44,8 +44,6 @@ command /gobridge:
 				
 		send "§4Sorry. All the gobridge rooms are currently full."
 
-command /gobridgehub:
-	executable by: players
 
 every 1 second:
 	loop all players:
