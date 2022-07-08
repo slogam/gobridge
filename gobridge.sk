@@ -1,1 +1,117 @@
+options:
+	godbridgePos: 108.5, 82, 16
+	godbridgeWorld: "god"
+	rooms: 3
+	distance: 4
+	length: 10
+	timeup: 30
+	commandOnWin: "/bal"	# This command is executed by player
+	commandOnWin2: /rewardcommandgoeshere	# Executed by console. Argument of the command will be the win amount
+	maxReward: 50			# Biggest reward that a player can get with godbridge
+
+
+
+
+
+command /godbridge:
+	executable by: players
+	trigger:
+		if {godbridge.p::%player%} is true:
+			send "§4You are already godbridging"
+			stop
+		loop {@rooms} times:
+			set block 1 below ({@distance} * loop-number) east location({@godbridgePos}, {@godbridgeWorld}) to grass block
+
+			if {godbridge.r::%loop-number%} is not set:
+				set {godbridge.r::%loop-number%} to true
+				set {godbridge.ur::%player%} to loop-number
+
+
+				set {godbridge.p::%player%} to true
+				teleport player to position ({@distance} * loop-number - {@distance}) east location({@godbridgePos}, {@godbridgeWorld}, 180, 70) 
+				clear player's inventory
+				give 10 red stained glass to player
+				set {godbridge.t2::%player%} to Unix Timestamp of now
+
+				stop
+
+				
+		send "§4Sorry. All the godbridge rooms are currently full."
+
+every 1 second:
+	loop all players:
+		{godbridge.p::%loop-player%} is true
+		if loop-player's y position + 2 < location({@godbridgePos})'s y position:
+			clear {godbridge.p::%loop-player%}
+			clear {godbridge.t::%loop-player%}
+			clear {godbridge.t2::%loop-player%}
+			clear {godbridge.r::%{godbridge.ur::%loop-player%}%}
+			clear {godbridge.ur::%loop-player%}
+
+			send "§cGame Over" to loop-player
+			clear loop-player's inventory
+			make loop-player execute command "/bal"
+		else if unix timestamp of now - {godbridge.t2::%loop-player%} > {@timeup}:
+			clear {godbridge.p::%loop-player%}
+			clear {godbridge.t::%loop-player%}
+			clear {godbridge.t2::%loop-player%}
+			clear {godbridge.r::%{godbridge.ur::%loop-player%}%}
+			clear {godbridge.ur::%loop-player%}
+
+
+			send "§cTime Up!" to loop-player
+			clear loop-player's inventory
+			make loop-player execute command "/bal"
+
+
+on block break:
+	if {godbridge.p::%player%} is true:
+		cancel event
+
+on block place:
+	if {godbridge.p::%player%} is true:
+		if event-blocks' y position is not (block at location({@godbridgePos}))'s y position - 1:
+			cancel event
+		wait 3 seconds
+		break event-block
+
+on step on diamond ore:
+	if {godbridge.p::%player%} is true:
+		set {_t} to unix timestamp of now - {godbridge.t::%player%}
+		clear {godbridge.p::%player%}
+		clear {godbridge.t::%player%}
+		clear {godbridge.t2::%player%}
+		clear player's inventory
+
+		set {_mt} to {@length} * 0.95
+		set {_amt} to max(round((({_mt} - {_t}) / ({_mt} * 0.8) ) * {@maxReward}), 0)
+		
+		send "§aYou completed the challenge in %{_t}% seconds%nl%§aReward: %{_amt}%$"
+
+
+		wait 1 second
+
+		clear {godbridge.r::%{godbridge.ur::%player%}%}
+		clear {godbridge.ur::%player%}
+
+
+		make player execute command {@commandOnWin}
+		execute console command "{@commandOnWin2} %{_amt}%"
+
+
+on player move:
+	{godbridge.p::%player%} is true
+	{godbridge.t::%player%} is not set
+	set {godbridge.t::%player%} to unix timestamp of now
+
+
+
+on script load:
+	clear {godbridge.r::*}
+
+command /gbdebug:
+	permission: gbdebug
+	trigger:
+		send "a %{godbridge.r::*}%"
+		clear {godbridge.r::*}
 
