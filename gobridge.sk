@@ -5,8 +5,8 @@ options:
 	distance: 4
 	length: 20
 	timeup: 40
-	commandOnWin: "/gobridgehub"	# This command is executed by player
-	commandOnWin2: /rewardcommandgoeshere	# Executed by console. Argument of the command will be the win amount
+	commandOnWin: /gobridgehub	# This command is executed by player
+	commandOnWin2: /eco give	# Executed by console. Argument of the command will be player and the win amount
 	maxReward: 50			# Biggest reward that a player can get with gobridge
 	winBlock: purpur pillar
 	gobridgeHub: 101, 72, -161
@@ -36,7 +36,7 @@ command /gobridge:
 				set {gobridge.p::%player%} to true
 				teleport player to position ({@distance} * loop-number - {@distance}) east location({@gobridgePos}, {@gobridgeWorld}, 180, 70) 
 				clear player's inventory
-				give 10 red stained glass to player
+				give ({@length} * 2) red stained glass to player
 				set {gobridge.t2::%player%} to Unix Timestamp of now
 
 				stop
@@ -102,8 +102,8 @@ on step on {@winBlock}:
 		clear {gobridge.ur::%player%}
 
 
-		make player execute command {@commandOnWin}
-		execute console command "{@commandOnWin2} %{_amt}%"
+		make player execute command "{@commandOnWin}"
+		execute console command "{@commandOnWin2} %player% %{_amt}%"
 
 
 on player move:
