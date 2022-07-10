@@ -36,7 +36,7 @@ command /gobridge:
 				set {gobridge.p::%player%} to true
 				teleport player to position ({@distance} * loop-number - {@distance}) east location({@gobridgePos}, {@gobridgeWorld}, 180, 70) 
 				clear player's inventory
-				give ({@length} * 2) red stained glass to player
+				give 64 red stained glass to player
 				set {gobridge.t2::%player%} to Unix Timestamp of now
 
 				stop
