@@ -77,7 +77,8 @@ on block break:
 
 on block place:
 	if {gobridge.p::%player%} is true:
-		if event-blocks' y position is not (block at location({@gobridgePos}))'s y position - 1:
+		set {_yP} to (block at location({@gobridgePos}))'s y position - 1
+		if event-blocks' y position is not {_yP} or ({_yP}+1) or ({_yP}+2) or ({_yP}+3):
 			cancel event
 		wait 3 seconds
 		break event-block
