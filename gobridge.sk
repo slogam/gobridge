@@ -57,7 +57,7 @@ every 1 second:
 
 			send "§cGame Over" to loop-player
 			clear loop-player's inventory
-			make loop-player execute command {@commandOnWin}
+			make loop-player execute command "{@commandOnWin}"
 		else if unix timestamp of now - {gobridge.t2::%loop-player%} > {@timeup}:
 			clear {gobridge.p::%loop-player%}
 			clear {gobridge.t::%loop-player%}
@@ -68,7 +68,7 @@ every 1 second:
 
 			send "§cTime Up!" to loop-player
 			clear loop-player's inventory
-			make loop-player execute command {@commandOnWin}
+			make loop-player execute command "{@commandOnWin}"
 
 
 on block break:
