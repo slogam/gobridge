@@ -54,7 +54,8 @@ every 1 second:
 			clear {gobridge.t2::%loop-player%}
 			clear {gobridge.r::%{gobridge.ur::%loop-player%}%}
 			clear {gobridge.ur::%loop-player%}
-
+			
+			loop-player's world is {@gobridgeWorld}
 			send "§cGame Over" to loop-player
 			clear loop-player's inventory
 			make loop-player execute command "{@commandOnWin}"
@@ -65,7 +66,7 @@ every 1 second:
 			clear {gobridge.r::%{gobridge.ur::%loop-player%}%}
 			clear {gobridge.ur::%loop-player%}
 
-
+			loop-player's world is {@gobridgeWorld}
 			send "§cTime Up!" to loop-player
 			clear loop-player's inventory
 			make loop-player execute command "{@commandOnWin}"
@@ -102,6 +103,7 @@ on step on {@winBlock}:
 		clear {gobridge.r::%{gobridge.ur::%player%}%}
 		clear {gobridge.ur::%player%}
 
+		player's world is {@gobridgeWorld}
 
 		make player execute command "{@commandOnWin}"
 		execute console command "{@commandOnWin2} %player% %{_amt}%"
@@ -112,7 +114,14 @@ on player move:
 	{gobridge.t::%player%} is not set
 	set {gobridge.t::%player%} to unix timestamp of now
 
-
+on quit:
+	{gobridge.p::%loop-player%} is set
+	
+	clear {gobridge.p::%loop-player%}
+	clear {gobridge.t::%loop-player%}
+	clear {gobridge.t2::%loop-player%}
+	clear {gobridge.r::%{gobridge.ur::%loop-player%}%}
+	clear {gobridge.ur::%loop-player%}
 
 on script load:
 	clear {gobridge.r::*}
