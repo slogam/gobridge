@@ -5,8 +5,8 @@ options:
 	distance: 4
 	length: 20
 	timeup: 40
-	commandOnWin: "/gobridgehub"	# This command is executed by player
-	commandOnWin2: /rewardcommandgoeshere	# Executed by console. Argument of the command will be the win amount
+	commandOnWin: /gobridgehub	# This command is executed by player
+	commandOnWin2: /eco give	# Executed by console. Argument of the command will be player and the win amount
 	maxReward: 50			# Biggest reward that a player can get with gobridge
 	winBlock: purpur pillar
 	gobridgeHub: 101, 72, -161
@@ -36,7 +36,7 @@ command /gobridge:
 				set {gobridge.p::%player%} to true
 				teleport player to position ({@distance} * loop-number - {@distance}) east location({@gobridgePos}, {@gobridgeWorld}, 180, 70) 
 				clear player's inventory
-				give 10 red stained glass to player
+				give 64 red stained glass to player
 				set {gobridge.t2::%player%} to Unix Timestamp of now
 
 				stop
@@ -54,10 +54,11 @@ every 1 second:
 			clear {gobridge.t2::%loop-player%}
 			clear {gobridge.r::%{gobridge.ur::%loop-player%}%}
 			clear {gobridge.ur::%loop-player%}
-
+			
+			loop-player's world is {@gobridgeWorld}
 			send "§cGame Over" to loop-player
 			clear loop-player's inventory
-			make loop-player execute command {@commandOnWin}
+			make loop-player execute command "{@commandOnWin}"
 		else if unix timestamp of now - {gobridge.t2::%loop-player%} > {@timeup}:
 			clear {gobridge.p::%loop-player%}
 			clear {gobridge.t::%loop-player%}
@@ -65,10 +66,10 @@ every 1 second:
 			clear {gobridge.r::%{gobridge.ur::%loop-player%}%}
 			clear {gobridge.ur::%loop-player%}
 
-
+			loop-player's world is {@gobridgeWorld}
 			send "§cTime Up!" to loop-player
 			clear loop-player's inventory
-			make loop-player execute command {@commandOnWin}
+			make loop-player execute command "{@commandOnWin}"
 
 
 on block break:
@@ -77,7 +78,8 @@ on block break:
 
 on block place:
 	if {gobridge.p::%player%} is true:
-		if event-blocks' y position is not (block at location({@gobridgePos}))'s y position - 1:
+		set {_yP} to (block at location({@gobridgePos}))'s y position - 1
+		if event-blocks' y position is not {_yP} or ({_yP}+1) or ({_yP}+2) or ({_yP}+3):
 			cancel event
 		wait 3 seconds
 		break event-block
@@ -101,9 +103,10 @@ on step on {@winBlock}:
 		clear {gobridge.r::%{gobridge.ur::%player%}%}
 		clear {gobridge.ur::%player%}
 
+		player's world is {@gobridgeWorld}
 
-		make player execute command {@commandOnWin}
-		execute console command "{@commandOnWin2} %{_amt}%"
+		make player execute command "{@commandOnWin}"
+		execute console command "{@commandOnWin2} %player% %{_amt}%"
 
 
 on player move:
@@ -111,7 +114,14 @@ on player move:
 	{gobridge.t::%player%} is not set
 	set {gobridge.t::%player%} to unix timestamp of now
 
-
+on quit:
+	{gobridge.p::%loop-player%} is set
+	
+	clear {gobridge.p::%loop-player%}
+	clear {gobridge.t::%loop-player%}
+	clear {gobridge.t2::%loop-player%}
+	clear {gobridge.r::%{gobridge.ur::%loop-player%}%}
+	clear {gobridge.ur::%loop-player%}
 
 on script load:
 	clear {gobridge.r::*}
