@@ -115,13 +115,13 @@ on player move:
 	set {gobridge.t::%player%} to unix timestamp of now
 
 on quit:
-	{gobridge.p::%loop-player%} is set
+	{gobridge.p::%player%} is set
 	
-	clear {gobridge.p::%loop-player%}
-	clear {gobridge.t::%loop-player%}
-	clear {gobridge.t2::%loop-player%}
-	clear {gobridge.r::%{gobridge.ur::%loop-player%}%}
-	clear {gobridge.ur::%loop-player%}
+	clear {gobridge.p::%player%}
+	clear {gobridge.t::%player%}
+	clear {gobridge.t2::%player%}
+	clear {gobridge.r::%{gobridge.ur::%player%}%}
+	clear {gobridge.ur::%player%}
 
 on script load:
 	clear {gobridge.r::*}
