@@ -1,5 +1,6 @@
 options:
 	gobridgePos: 108.5, 82, 16
+	gobridgeDirection: 0, 70
 	gobridgeWorld: "god"
 	rooms: 7
 	distance: 4
@@ -9,9 +10,9 @@ options:
 	commandOnWin2: /eco give	# Executed by console. Argument of the command will be player and the win amount
 	maxReward: 50			# Biggest reward that a player can get with gobridge
 	winBlock: purpur pillar
-	gobridgeHub: 101, 72, -161
+	gobridgeHub: 96, 72, -161
 	gobridgeHubDirection: 90, 0
-
+	
 command /gobridgehub:
 	executable by: players
 	trigger:
@@ -34,7 +35,7 @@ command /gobridge:
 
 
 				set {gobridge.p::%player%} to true
-				teleport player to position ({@distance} * loop-number - {@distance}) east location({@gobridgePos}, {@gobridgeWorld}, 180, 70) 
+				teleport player to position ({@distance} * loop-number - {@distance}) east location({@gobridgePos}, {@gobridgeWorld}, {@gobridgeDirection}) 
 				clear player's inventory
 				give 64 red stained glass to player
 				set {gobridge.t2::%player%} to Unix Timestamp of now
@@ -79,9 +80,12 @@ on block break:
 on block place:
 	if {gobridge.p::%player%} is true:
 		set {_yP} to (block at location({@gobridgePos}))'s y position - 1
-		if event-blocks' y position is not {_yP} or ({_yP}+1) or ({_yP}+2) or ({_yP}+3):
+		if event-block's y position is not {_yP} or ({_yP}+1) or ({_yP}+2) or ({_yP}+3):
 			cancel event
-		wait 3 seconds
+		set {_xP} to {@gobridgePos}'s x position + ({gobridge.ur::%player%} * {@distance})
+		if event-block's x position is not {_xP}:
+			cancel event
+		wait 5 seconds
 		break event-block
 
 on step on {@winBlock}:
@@ -131,4 +135,3 @@ command /gbdebug:
 	trigger:
 		send "a %{gobridge.r::*}%"
 		clear {gobridge.r::*}
-
