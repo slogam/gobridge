@@ -81,10 +81,8 @@ on block place:
 	if {gobridge.p::%player%} is true:
 		set {_yP} to (block at location({@gobridgePos}))'s y position - 1
 		if event-block's y position is not {_yP} or ({_yP}+1) or ({_yP}+2) or ({_yP}+3):
-			cancel event
-		set {_xP} to location({@gobridgePos})'s x position + ({gobridge.ur::%player%} * {@distance})
-		if event-block's x position is not {_xP}:
-			cancel event
+
+
 		wait 5 seconds
 		break event-block
 
@@ -135,4 +133,3 @@ command /gbdebug:
 	trigger:
 		send "a %{gobridge.r::*}%"
 		clear {gobridge.r::*}
-
